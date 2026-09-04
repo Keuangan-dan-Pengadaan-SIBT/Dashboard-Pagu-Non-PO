@@ -462,7 +462,7 @@
             </div>
         </div>
 
-        <!-- TAB 4: SHEET TOP UP NON PO -->
+        <!-- TAB 4: SHEET TOP UP NON PO (MARKING WARNA DENGAN NILAI NUMERIK & STATUS BADGE DITERAPKAN DENGAN JELAS) -->
         <div id="tab-relokasi" class="tab-content hidden space-y-6">
             <div class="bi-card rounded-2xl p-5 shadow-sm space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
@@ -479,12 +479,12 @@
                     <table class="w-full text-left text-xs text-slate-200">
                         <thead class="bg-slate-900 text-slate-400 font-bold uppercase tracking-wider text-[10px] border-b border-slate-800">
                             <tr>
-                                <th class="p-3.5">bidang</th>
-                                <th class="p-3.5 text-right font-bold text-sky-400">Anggaran Terpagu</th>
-                                <th class="p-3.5 text-right">Pagu / Bulan</th>
-                                <th class="p-3.5 text-right font-bold text-amber-400">Pagu 12 Bulan</th>
-                                <th class="p-3.5 text-center">% Penyerapan Pagu</th>
-                                <th class="p-3.5 text-center">Penyerapan Pagu Maximal (90%)</th>
+                                <th class="p-3.5">BIDANG</th>
+                                <th class="p-3.5 text-right font-bold text-sky-400">ANGGARAN TERPAGU</th>
+                                <th class="p-3.5 text-right">PAGU / BULAN</th>
+                                <th class="p-3.5 text-right font-bold text-amber-400">PAGU 12 BULAN</th>
+                                <th class="p-3.5 text-center">% PENYERAPAN PAGU</th>
+                                <th class="p-3.5 text-center">PENYERAPAN PAGU MAXIMAL (90%)</th>
                             </tr>
                         </thead>
                         <tbody id="tableTerpaguBody" class="divide-y divide-slate-800/60 bg-slate-950/40"></tbody>
@@ -526,14 +526,14 @@
             ],
 
             terpaguBidang: [
-                { name: "SUB BIDANG OPERASI, PEMELIHARAAN DAN ASET SULAWESI DAN IBT", terpagu: 16100000, bulanan: 2497042, tahunan: 29964500, pct: "53,73%", pctMax: "59,70%" },
-                { name: "SUB BIDANG PENJUALAN RITEL DAN ADMINISTRASI SULAWESI DAN IBT", terpagu: 222500000, bulanan: 15814597, tahunan: 189775167, pct: "117,24%", pctMax: "130,27%" },
-                { name: "SUB BIDANG PEMASARAN DAN PENJUALAN B2B SULAWESI DAN IBT", terpagu: 0, bulanan: 1664694, tahunan: 19976333, pct: "0,00%", pctMax: "0,00%" },
-                { name: "SUB BIDANG PEMBANGUNAN DAN DELIVERY LAYANAN SULAWESI DAN IBT", terpagu: 44650000, bulanan: 4161736, tahunan: 49940833, pct: "89,41%", pctMax: "99,34%" },
-                { name: "UNIT LAYANAN MALUKU DAN MALUKU UTARA", terpagu: 47990850, bulanan: 4994083, tahunan: 59929000, pct: "80,08%", pctMax: "88,98%" },
-                { name: "UNIT LAYANAN PALU, KENDARI DAN MAMUJU", terpagu: 133000000, bulanan: 17479292, tahunan: 209751500, pct: "63,41%", pctMax: "70,45%" },
-                { name: "UNIT LAYANAN PAPUA DAN PAPUA BARAT", terpagu: 46982250, bulanan: 4994083, tahunan: 59929000, pct: "78,40%", pctMax: "87,11%" },
-                { name: "UNIT LAYANAN SULUTENGGO", terpagu: 117000000, bulanan: 13317556, tahunan: 159810667, pct: "73,21%", pctMax: "81,35%" }
+                { name: "SUB BIDANG OPERASI, PEMELIHARAAN DAN ASET SULAWESI DAN IBT", terpagu: 16100000, bulanan: 2497042, tahunan: 29964500, pct: "53,73%", pctMax: "59,70%", pctMaxVal: 59.70 },
+                { name: "SUB BIDANG PENJUALAN RITEL DAN ADMINISTRASI SULAWESI DAN IBT", terpagu: 222500000, bulanan: 15814597, tahunan: 189775167, pct: "117,24%", pctMax: "130,27%", pctMaxVal: 130.27 },
+                { name: "SUB BIDANG PEMASARAN DAN PENJUALAN B2B SULAWESI DAN IBT", terpagu: 0, bulanan: 1664694, tahunan: 19976333, pct: "0,00%", pctMax: "0,00%", pctMaxVal: 0.00 },
+                { name: "SUB BIDANG PEMBANGUNAN DAN DELIVERY LAYANAN SULAWESI DAN IBT", terpagu: 44650000, bulanan: 4161736, tahunan: 49940833, pct: "89,41%", pctMax: "99,34%", pctMaxVal: 99.34 },
+                { name: "UNIT LAYANAN MALUKU DAN MALUKU UTARA", terpagu: 47990850, bulanan: 4994083, tahunan: 59929000, pct: "80,08%", pctMax: "88,98%", pctMaxVal: 88.98 },
+                { name: "UNIT LAYANAN PALU, KENDARI DAN MAMUJU", terpagu: 133000000, bulanan: 17479292, tahunan: 209751500, pct: "63,41%", pctMax: "70,45%", pctMaxVal: 70.45 },
+                { name: "UNIT LAYANAN PAPUA DAN PAPUA BARAT", terpagu: 46982250, bulanan: 4994083, tahunan: 59929000, pct: "78,40%", pctMax: "87,11%", pctMaxVal: 87.11 },
+                { name: "UNIT LAYANAN SULUTENGGO", terpagu: 117000000, bulanan: 13317556, tahunan: 159810667, pct: "73,21%", pctMax: "81,35%", pctMaxVal: 81.35 }
             ]
         };
 
@@ -720,6 +720,7 @@
             }
         }
 
+        // TAMPILAN MATRIKS SHEET TOP UP NON PO DENGAN MARKING PENYERAPAN DENGAN HIJAU DAN MERAH AKURAT
         function renderTerpaguTable() {
             const tbody = document.getElementById('tableTerpaguBody');
             const tfoot = document.getElementById('tableTerpaguFoot');
@@ -731,6 +732,9 @@
             let totalTahun = 779077000;
 
             DATASTORE.terpaguBidang.forEach(b => {
+                const isOverMax = b.pctMaxVal > 90;
+                const maxColorClass = isOverMax ? 'text-rose-400 font-extrabold' : 'text-emerald-400 font-extrabold';
+
                 rows += `
                     <tr class="hover:bg-slate-900/60 transition">
                         <td class="p-3.5 font-semibold text-slate-100">${b.name}</td>
@@ -738,7 +742,7 @@
                         <td class="p-3.5 text-right text-slate-300">${formatIDR(b.bulanan)}</td>
                         <td class="p-3.5 text-right font-bold text-amber-400">${formatIDR(b.tahunan)}</td>
                         <td class="p-3.5 text-center font-bold text-slate-200">${b.pct}</td>
-                        <td class="p-3.5 text-center font-bold text-emerald-400">${b.pctMax}</td>
+                        <td class="p-3.5 text-center ${maxColorClass}">${b.pctMax}</td>
                     </tr>
                 `;
             });
@@ -752,7 +756,7 @@
                         <td class="p-3.5 text-right font-bold">${formatIDR(totalBulan)}</td>
                         <td class="p-3.5 text-right font-bold text-amber-400">${formatIDR(totalTahun)}</td>
                         <td class="p-3.5 text-center font-bold">80,64%</td>
-                        <td class="p-3.5 text-center font-bold text-emerald-400">89,60%</td>
+                        <td class="p-3.5 text-center font-extrabold text-emerald-400">89,60%</td>
                     </tr>
                 `;
             }
@@ -794,7 +798,6 @@
             }
         }
 
-        // TAMPILAN EYECATCHING LENGKAP PERSIS SESUAI LAYOUT GAMBAR REFERENSI ANDA
         function renderGridCylinderCharts() {
             const grid = document.getElementById('unitCylinderGrid');
             if (!grid) return;
