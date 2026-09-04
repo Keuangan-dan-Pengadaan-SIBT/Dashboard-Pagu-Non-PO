@@ -143,7 +143,7 @@
                         <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                     </span>
                     <h2 class="text-xs font-bold uppercase tracking-wider text-slate-300">
-                        Slicers & Filter Interaktif <span id="syncStatusBadge" class="normal-case font-normal text-[10px] text-emerald-400 ml-2 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full">(Tersinkron GID 702313109)</span>
+                        Slicers & Filter Interaktif <span id="syncStatusBadge" class="normal-case font-normal text-[10px] text-emerald-400 ml-2 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full">(Tersinkron PO 4500027047)</span>
                     </h2>
                 </div>
                 <div class="flex items-center space-x-3 text-xs">
@@ -460,7 +460,7 @@
             </div>
         </div>
 
-        <!-- TAB 4: SHEET TOP UP NON PO (DENGAN DATA PERSIS GSHEET TERBARU GAMBAR ANDA) -->
+        <!-- TAB 4: SHEET TOP UP NON PO -->
         <div id="tab-relokasi" class="tab-content hidden space-y-6">
             <div class="bi-card rounded-2xl p-5 shadow-sm space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
@@ -523,7 +523,6 @@
                 { id: "SULUTENGGO", name: "UNIT LAYANAN SULUTENGGO", code: "Manado & Grtlo", tad: 16, realisasi: 128681610, ot: 35434000, sppd: 31979610, shift: 61268000, pagu: 159810667, monthlyData: [359000, 1843000, 4206000, 8860000, 6316000, 2077000, 6714000, 5059000, 0], sppdData: [4118000, 1987000, 2662000, 1919000, 4099000, 1594000, 1540000, 2099000, 0], shiftData: [8000000, 7500000, 9200000, 6800000, 10000000, 7500000, 5268000, 7000000, 0] }
             ],
 
-            // DATA TERUPDATE PERSIS 100% PERSIS DENGAN GAMBAR GSHEET TERBARU ANDA
             terpaguBidang: [
                 { name: "SUB BIDANG OPERASI, PEMELIHARAAN DAN ASET SULAWESI DAN IBT", terpagu: 16100000, bulanan: 2497042, tahunan: 29964500, pct: "53,73%", pctMax: "59,70%" },
                 { name: "SUB BIDANG PENJUALAN RITEL DAN ADMINISTRASI SULAWESI DAN IBT", terpagu: 222500000, bulanan: 15814597, tahunan: 189775167, pct: "117,24%", pctMax: "130,27%" },
@@ -708,7 +707,6 @@
             }
         }
 
-        // TAB TERPAGU PERSIS SESUAI GAMBAR GSHEET TERBARU ANDA
         function renderTerpaguTable() {
             const tbody = document.getElementById('tableTerpaguBody');
             const tfoot = document.getElementById('tableTerpaguFoot');
@@ -758,7 +756,7 @@
                 renderCharts();
                 renderMonitoringTable();
                 renderTerpaguTable();
-                showToast("Sinkronisasi Berhasil", "Data berhasil diselaraskan dengan GSheet.");
+                showToast("Sinkronisasi Berhasil", "Data berhasil diselaraskan dengan PO 4500027047.");
             }, 500);
         }
 
