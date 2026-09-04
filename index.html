@@ -512,7 +512,6 @@
                 { id: "Sep-26", label: "Sep-26", ot: 0, sppd: 0, shift: 0, total: 0, pagu: 64923083 }
             ],
 
-            // PAGU TAHUNAN DISESUAIKAN PRESISI SAMA DENGAN TABEL TOP UP NON PO (TOTAL: Rp 779.077.000)
             units: [
                 { id: "OPERASI", name: "SUB BIDANG OPERASI, PEMELIHARAAN DAN ASET SULAWESI DAN IBT", code: "Makassar-2, 3 & 7", tad: 3, realisasi: 17241093, ot: 8315000, sppd: 8926093, shift: 0, pagu: 29964500, monthlyData: [180000, 1378000, 411000, 655000, 1664000, 1117000, 1890000, 1020000, 0], sppdData: [4118000, 1987000, 2662000, 1919000, 4099000, 1594000, 1540000, 2099000, 0], shiftData: [0, 0, 0, 0, 0, 0, 0, 0, 0] },
                 { id: "RITEL", name: "SUB BIDANG PENJUALAN RITEL DAN ADMINISTRASI SULAWESI DAN IBT", code: "Makassar-4", tad: 19, realisasi: 203983269, ot: 91505000, sppd: 61339269, shift: 51139000, pagu: 189775167, monthlyData: [10583000, 2040000, 11365000, 13444000, 12100000, 13972000, 14170000, 13831000, 0], sppdData: [637000, 658000, 1529000, 658000, 1180000, 749000, 444000, 2710000, 0], shiftData: [24923000, 24495000, 41859000, 26410000, 48814000, 26646000, 18228000, 26531000, 0] },
@@ -569,6 +568,8 @@
             html.classList.toggle('light');
             html.classList.toggle('dark');
             renderCharts();
+            renderCombinedCylinderCharts();
+            renderGridCylinderCharts();
         }
 
         function getFilteredData() {
@@ -591,6 +592,8 @@
         function triggerFilterUpdate() {
             renderCharts();
             renderMonitoringTable();
+            renderCombinedCylinderCharts();
+            renderGridCylinderCharts();
         }
 
         function resetFilters() {
@@ -642,7 +645,6 @@
                 }
             }
 
-            // WARNA GRAFIK PER SUB BIDANG DIKEMBALIKAN KE MULTI-COLOR GRADASI SEMULA
             const ctxBar = document.getElementById('unitBarChart');
             if (ctxBar) {
                 if (chartInstances.unitBar) chartInstances.unitBar.destroy();
@@ -754,8 +756,90 @@
             }
         }
 
-        function renderCombinedCylinderCharts() {}
-        function renderGridCylinderCharts() {}
+        // PENGISIAN GRAFIK DIAGRAM TABUNG PADA TAB TREND PER BIDANG
+        function renderCombinedCylinderCharts() {
+            if (typeof Chart === 'undefined') return;
+            const { months } = getFilteredData();
+            const labels = months.map(m => m.label);
+
+            const ctxOt = document.getElementById('cylinderOtChart');
+            if (ctxOt) {
+                if (chartInstances.cylOt) chartInstances.cylOt.destroy();
+                chartInstances.cylOt = new Chart(ctxOt, {
+                    type: 'bar',
+                    data: { labels, datasets: [{ label: 'OT (Rp)', data: months.map(m => m.ot), backgroundColor: '#0284c7', borderRadius: 4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+            }
+
+            const ctxSppd = document.getElementById('cylinderSppdChart');
+            if (ctxSppd) {
+                if (chartInstances.cylSppd) chartInstances.cylSppd.destroy();
+                chartInstances.cylSppd = new Chart(ctxSppd, {
+                    type: 'bar',
+                    data: { labels, datasets: [{ label: 'SPPD (Rp)', data: months.map(m => m.sppd), backgroundColor: '#f59e0b', borderRadius: 4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+            }
+
+            const ctxShift = document.getElementById('cylinderShiftChart');
+            if (ctxShift) {
+                if (chartInstances.cylShift) chartInstances.cylShift.destroy();
+                chartInstances.cylShift = new Chart(ctxShift, {
+                    type: 'bar',
+                    data: { labels, datasets: [{ label: 'Shifting (Rp)', data: months.map(m => m.shift), backgroundColor: '#10b981', borderRadius: 4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+            }
+        }
+
+        // PENGISIAN GRID BREAKDOWN TREN TIKET PER SUB BIDANG
+        function renderGridCylinderCharts() {
+            const grid = document.getElementById('unitCylinderGrid');
+            if (!grid) return;
+            const { months, units } = getFilteredData();
+            const labels = months.map(m => m.label);
+
+            let gridHtml = '';
+            units.forEach((u, idx) => {
+                gridHtml += `
+                    <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-3 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-slate-200 truncate" title="${u.name}">${u.name.replace('SUB BIDANG ', '').replace('UNIT LAYANAN ', '')}</span>
+                            <span class="text-[10px] font-bold text-amber-400">${formatIDR(u.realisasi)}</span>
+                        </div>
+                        <div class="relative h-40 w-full">
+                            <canvas id="unitGridChart_${idx}"></canvas>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = gridHtml;
+
+            units.forEach((u, idx) => {
+                const canvas = document.getElementById(`unitGridChart_${idx}`);
+                if (canvas) {
+                    if (chartInstances[`unitGrid_${idx}`]) chartInstances[`unitGrid_${idx}`].destroy();
+                    chartInstances[`unitGrid_${idx}`] = new Chart(canvas, {
+                        type: 'bar',
+                        data: {
+                            labels,
+                            datasets: [
+                                { label: 'OT', data: u.monthlyData, backgroundColor: '#0284c7' },
+                                { label: 'SPPD', data: u.sppdData, backgroundColor: '#f59e0b' },
+                                { label: 'Shift', data: u.shiftData, backgroundColor: '#10b981' }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: { x: { stacked: true }, y: { stacked: true } },
+                            plugins: { legend: { display: false } }
+                        }
+                    });
+                }
+            });
+        }
 
         async function syncGoogleSheets() {
             const icon = document.getElementById('syncIcon');
@@ -765,6 +849,8 @@
                 renderCharts();
                 renderMonitoringTable();
                 renderTerpaguTable();
+                renderCombinedCylinderCharts();
+                renderGridCylinderCharts();
                 showToast("Sinkronisasi Berhasil", "Data berhasil diselaraskan dengan PO 4500027047.");
             }, 500);
         }
@@ -777,6 +863,8 @@
             renderCharts();
             renderMonitoringTable();
             renderTerpaguTable();
+            renderCombinedCylinderCharts();
+            renderGridCylinderCharts();
         });
     </script>
 </body>
