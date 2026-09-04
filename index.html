@@ -362,10 +362,10 @@
 
                             <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-200">
                                 <div class="font-bold flex items-center gap-1.5 text-amber-400 mb-1">
-                                    <i class="fa-solid fa-triangle-exclamation"></i> Status Optimal (80-90%):
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Status Warning (75-100%):
                                 </div>
                                 <p class="text-slate-300">
-                                    <strong>Maluku & Malut:</strong> 80.08% | <strong>Papua & Papua Barat:</strong> 78.40%
+                                    <strong>Maluku & Malut:</strong> 88.98% | <strong>Papua & Papua Barat:</strong> 87.11% | <strong>Sulutenggo:</strong> 81.35%
                                 </p>
                             </div>
                         </div>
@@ -409,7 +409,7 @@
                                 <th class="p-3.5 text-right font-bold text-amber-400">Total Realisasi</th>
                                 <th class="p-3.5 text-right font-bold">Sisa Pagu (Rp)</th>
                                 <th class="p-3.5 text-center">% Realisasi</th>
-                                <th class="p-3.5 text-center">Status Fitur System</th>
+                                <th class="p-3.5 text-center">STATUS PENYERAPAN</th>
                             </tr>
                         </thead>
                         <tbody id="tableMonitoringBody" class="divide-y divide-slate-800/60 bg-slate-950/40"></tbody>
@@ -462,7 +462,7 @@
             </div>
         </div>
 
-        <!-- TAB 4: SHEET TOP UP NON PO (MARKING WARNA DENGAN NILAI NUMERIK & STATUS BADGE DITERAPKAN DENGAN JELAS) -->
+        <!-- TAB 4: SHEET TOP UP NON PO -->
         <div id="tab-relokasi" class="tab-content hidden space-y-6">
             <div class="bi-card rounded-2xl p-5 shadow-sm space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
@@ -484,7 +484,7 @@
                                 <th class="p-3.5 text-right">PAGU / BULAN</th>
                                 <th class="p-3.5 text-right font-bold text-amber-400">PAGU 12 BULAN</th>
                                 <th class="p-3.5 text-center">% PENYERAPAN PAGU</th>
-                                <th class="p-3.5 text-center">PENYERAPAN PAGU MAXIMAL (90%)</th>
+                                <th class="p-3.5 text-center">STATUS PENYERAPAN</th>
                             </tr>
                         </thead>
                         <tbody id="tableTerpaguBody" class="divide-y divide-slate-800/60 bg-slate-950/40"></tbody>
@@ -538,6 +538,17 @@
         };
 
         function formatIDR(val) { return "Rp " + Math.round(val || 0).toLocaleString("id-ID"); }
+
+        // FUNGSI UTAMA PENENTUAN BADGE INDIKATOR WARNA STATUS PENYERAPAN (>100% MERAH, 75-100% KUNING, <75% HIJAU)
+        function getStatusBadgeHtml(percentage) {
+            if (percentage > 100) {
+                return `<span class="px-2.5 py-1 text-[10px] font-extrabold bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-full">${percentage.toFixed(2).replace('.', ',')}% (OVER)</span>`;
+            } else if (percentage >= 75) {
+                return `<span class="px-2.5 py-1 text-[10px] font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full">${percentage.toFixed(2).replace('.', ',')}% (WARNING)</span>`;
+            } else {
+                return `<span class="px-2.5 py-1 text-[10px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full">${percentage.toFixed(2).replace('.', ',')}% (SAFE)</span>`;
+            }
+        }
 
         function showToast(title, message, isSuccess = true) {
             const toast = document.getElementById('toast');
@@ -682,7 +693,7 @@
                 const pct = u.pagu > 0 ? (u.realisasi / u.pagu) * 100 : 0;
                 sumTad += u.tad; sumPagu += u.pagu; sumOt += u.ot; sumSppd += u.sppd; sumShift += u.shift; sumReal += u.realisasi; sumSisa += sisa;
 
-                let statusBadge = pct > 100 ? `<span class="px-2.5 py-1 text-[10px] font-extrabold bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-full">OVER (&gt;100%)</span>` : pct > 75 ? `<span class="px-2.5 py-1 text-[10px] font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full">WARNING (&gt;75%)</span>` : `<span class="px-2.5 py-1 text-[10px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full">SAFE</span>`;
+                let statusBadge = getStatusBadgeHtml(pct);
 
                 rowsHtml += `
                     <tr class="hover:bg-slate-900/60 transition">
@@ -714,13 +725,13 @@
                         <td class="p-3.5 text-right font-bold text-amber-400">${formatIDR(sumReal)}</td>
                         <td class="p-3.5 text-right font-bold ${sumSisa < 0 ? 'text-rose-400' : 'text-emerald-400'}">${formatIDR(sumSisa)}</td>
                         <td class="p-3.5 text-center font-bold">${totalPct.toFixed(1)}%</td>
-                        <td class="p-3.5 text-center font-bold">-</td>
+                        <td class="p-3.5 text-center font-bold">${getStatusBadgeHtml(totalPct)}</td>
                     </tr>
                 `;
             }
         }
 
-        // TAMPILAN MATRIKS SHEET TOP UP NON PO DENGAN MARKING PENYERAPAN DENGAN HIJAU DAN MERAH AKURAT
+        // TABEL TERPAGU DENGAN STATUS PENYERAPAN BERDASARKAN ATURAN BARU (>100% MERAH OVER, 75-100% KUNING WARNING, <75% HIJAU SAFE)
         function renderTerpaguTable() {
             const tbody = document.getElementById('tableTerpaguBody');
             const tfoot = document.getElementById('tableTerpaguFoot');
@@ -732,8 +743,7 @@
             let totalTahun = 779077000;
 
             DATASTORE.terpaguBidang.forEach(b => {
-                const isOverMax = b.pctMaxVal > 90;
-                const maxColorClass = isOverMax ? 'text-rose-400 font-extrabold' : 'text-emerald-400 font-extrabold';
+                const statusHtml = getStatusBadgeHtml(b.pctMaxVal);
 
                 rows += `
                     <tr class="hover:bg-slate-900/60 transition">
@@ -742,7 +752,7 @@
                         <td class="p-3.5 text-right text-slate-300">${formatIDR(b.bulanan)}</td>
                         <td class="p-3.5 text-right font-bold text-amber-400">${formatIDR(b.tahunan)}</td>
                         <td class="p-3.5 text-center font-bold text-slate-200">${b.pct}</td>
-                        <td class="p-3.5 text-center ${maxColorClass}">${b.pctMax}</td>
+                        <td class="p-3.5 text-center">${statusHtml}</td>
                     </tr>
                 `;
             });
@@ -756,7 +766,7 @@
                         <td class="p-3.5 text-right font-bold">${formatIDR(totalBulan)}</td>
                         <td class="p-3.5 text-right font-bold text-amber-400">${formatIDR(totalTahun)}</td>
                         <td class="p-3.5 text-center font-bold">80,64%</td>
-                        <td class="p-3.5 text-center font-extrabold text-emerald-400">89,60%</td>
+                        <td class="p-3.5 text-center">${getStatusBadgeHtml(89.60)}</td>
                     </tr>
                 `;
             }
