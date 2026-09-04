@@ -197,7 +197,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-semibold text-slate-400 mb-1">Pencarian Cepat</label>
+                    <label class="block text-[11px] font-semibold text-slate-400 mb-1">Pancarian Cepat</label>
                     <div class="relative">
                         <input type="text" id="filterKeyword" onkeyup="triggerFilterUpdate()" placeholder="Cari unit atau seksi..." class="w-full text-xs bg-slate-900 border border-slate-700 text-slate-200 rounded-xl p-2.5 pl-8 focus:ring-2 focus:ring-sky-500 outline-none">
                         <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-3 text-slate-500 text-xs"></i>
@@ -292,15 +292,15 @@
         <!-- TAB 1: RINGKASAN EKSEKUTIF -->
         <div id="tab-ringkasan" class="tab-content space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Single Bar Trend Chart -->
+                <!-- Single Bar Trend Chart dengan Pewarnaan Dinamis Ambang Batas -->
                 <div class="lg:col-span-2 bi-card rounded-2xl p-5 shadow-sm space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
                         <div>
                             <h3 class="text-sm font-bold text-white flex items-center gap-2">
                                 <i class="fa-solid fa-chart-column text-sky-400"></i>
-                                Trend Realisasi Varcost vs Pagu Bulanan (Jan - Sep 2026)
+                                Trend Realisasi Varcost vs Pagu Bulanan (Jan – Sep 2026)
                             </h3>
-                            <p class="text-xs text-slate-400">Garis merah mengindikasikan batas pagu bulanan (Rp 64,92 Juta)</p>
+                            <p class="text-xs text-slate-400">Garis merah mengindikasikan batas pagu bulanan (Rp 64,92 Juta). Batang merah = melebihi pagu.</p>
                         </div>
                     </div>
                     <div class="relative h-72 w-full">
@@ -450,7 +450,7 @@
                 </div>
             </div>
 
-            <!-- BREAKDOWN KARTU KURSOR EYECATCHING PERSIS REFERENSI GAMBAR ANDA -->
+            <!-- BREAKDOWN KARTU KURSOR EYECATCHING -->
             <div class="bi-card rounded-2xl p-5 shadow-sm space-y-4">
                 <div class="border-b border-slate-800 pb-3">
                     <h3 class="text-sm font-bold text-white flex items-center gap-2">
@@ -539,7 +539,6 @@
 
         function formatIDR(val) { return "Rp " + Math.round(val || 0).toLocaleString("id-ID"); }
 
-        // FUNGSI UTAMA PENENTUAN BADGE INDIKATOR WARNA STATUS PENYERAPAN (>100% MERAH, 75-100% KUNING, <75% HIJAU)
         function getStatusBadgeHtml(percentage) {
             if (percentage > 100) {
                 return `<span class="px-2.5 py-1 text-[10px] font-extrabold bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-full">${percentage.toFixed(2).replace('.', ',')}% (OVER)</span>`;
@@ -623,19 +622,52 @@
             if (typeof Chart === 'undefined') return;
             const { months, units } = getFilteredData();
 
+            // RENDER GRAFIK TREN BULANAN DENGAN PEWARNAAN MERAH PADA BATANG YANG MELEBIHI PAGU (64.923.083)
             const ctxTrend = document.getElementById('trendChart');
             if (ctxTrend) {
                 if (chartInstances.trend) chartInstances.trend.destroy();
+
+                const barColors = months.map(m => m.total > m.pagu ? '#f43f5e' : '#0284c7');
+
                 chartInstances.trend = new Chart(ctxTrend, {
                     type: 'bar',
                     data: {
                         labels: months.map(m => m.label),
                         datasets: [
-                            { type: 'line', label: 'Batas Pagu Bulanan', data: months.map(m => m.pagu), borderColor: '#f43f5e', borderWidth: 2, borderDash: [5,5], pointRadius: 0, order: 1 },
-                            { type: 'bar', label: 'Realisasi Varcost', data: months.map(m => m.total), backgroundColor: '#0284c7', borderRadius: 6, order: 2 }
+                            { 
+                                type: 'line', 
+                                label: 'Batas Pagu Bulanan', 
+                                data: months.map(m => m.pagu), 
+                                borderColor: '#f43f5e', 
+                                borderWidth: 2, 
+                                borderDash: [5,5], 
+                                pointRadius: 0, 
+                                order: 1 
+                            },
+                            { 
+                                type: 'bar', 
+                                label: 'Realisasi Varcost', 
+                                data: months.map(m => m.total), 
+                                backgroundColor: barColors, 
+                                borderRadius: 6, 
+                                order: 2 
+                            }
                         ]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: function(value) {
+                                        return value >= 1000000 ? (value / 1000000).toFixed(0) + ' Jt' : value;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 });
             }
 
@@ -731,7 +763,6 @@
             }
         }
 
-        // TABEL TERPAGU DENGAN STATUS PENYERAPAN BERDASARKAN ATURAN BARU (>100% MERAH OVER, 75-100% KUNING WARNING, <75% HIJAU SAFE)
         function renderTerpaguTable() {
             const tbody = document.getElementById('tableTerpaguBody');
             const tfoot = document.getElementById('tableTerpaguFoot');
